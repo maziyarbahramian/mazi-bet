@@ -1,0 +1,234 @@
+basePath: /
+definitions:
+  handlers.AccountResponse:
+    properties:
+      Balance:
+        type: number
+      ID:
+        type: integer
+      Token:
+        type: string
+      Username:
+        type: string
+    type: object
+  handlers.BetRequest:
+    properties:
+      amount:
+        type: number
+    type: object
+  handlers.DepositWithdrawRequest:
+    properties:
+      amount:
+        type: number
+    type: object
+  handlers.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  handlers.ErrorResponseRegisterLogin:
+    properties:
+      message:
+        type: string
+      responsecode:
+        type: integer
+    type: object
+  handlers.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  handlers.UserCreateRequest:
+    properties:
+      email:
+        type: string
+      firstname:
+        type: string
+      lastname:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      username:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: Interview Challenge
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: MAZI-BET
+  version: "1.0"
+paths:
+  /bet:
+    post:
+      consumes:
+      - application/json
+      description: Create BetHandler Event
+      parameters:
+      - description: BetHandler Event Create request body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.BetRequest'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: create BetHandler event
+      tags:
+      - bet-event
+  /users/deposit:
+    post:
+      consumes:
+      - application/json
+      description: Deposit an amount to user balance
+      parameters:
+      - description: Deposit request body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.DepositWithdrawRequest'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.AccountResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Deposit Handler
+      tags:
+      - balance
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Login with username and password
+      parameters:
+      - description: Login request body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.AccountResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponseRegisterLogin'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponseRegisterLogin'
+      summary: User login
+      tags:
+      - users
+  /users/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with the provided information
+      parameters:
+      - description: User registration details
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.UserCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.AccountResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponseRegisterLogin'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponseRegisterLogin'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponseRegisterLogin'
+      summary: Register a new user
+      tags:
+      - users
+  /users/withdraw:
+    post:
+      consumes:
+      - application/json
+      description: withdraw from user balance
+      parameters:
+      - description: withdraw request body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.DepositWithdrawRequest'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.AccountResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Withdraw Handler
+      tags:
+      - balance
+swagger: "2.0"

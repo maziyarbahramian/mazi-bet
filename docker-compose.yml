@@ -1,0 +1,41 @@
+version: '3.9'
+
+services:
+  db:
+    restart: always
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    volumes:
+      - "dbdata:/var/lib/postgresql/data/"
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", "${POSTGRES_DB}", "-U", "${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: mazi_bet
+    ports:
+      - 8080:8080
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    command: >
+      sh -c "
+        go run main.go
+      "
+    depends_on:
+      db:
+        condition: "service_healthy"
+volumes:
+  dbdata:
+    driver: local
