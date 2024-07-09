@@ -7,7 +7,7 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - "dbdata:/var/lib/postgresql/data/"
+      - "database1:/var/lib/postgresql/data/"
     env_file:
       - .env
     environment:
@@ -37,5 +37,6 @@ services:
       db:
         condition: "service_healthy"
 volumes:
-  dbdata:
+  database1:
+    name: database1
     driver: local

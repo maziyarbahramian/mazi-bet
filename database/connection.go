@@ -34,14 +34,17 @@ func Connect() error {
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s",
 		dbHost, dbUser, dbPassword, dbName, dbPort, sslmode, dbTimezone)
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+	db, _ := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
 
-	db.AutoMigrate(
+	err = db.AutoMigrate(
 		&models.User{},
 		&models.Account{},
 	)
+	if err != nil {
+		fmt.Printf("auto migrate faile %v\n", err)
+	}
 
 	if err != nil {
 		return err
